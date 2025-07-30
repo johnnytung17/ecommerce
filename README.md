@@ -47,15 +47,6 @@ cd project
 npm install
 ```
 
-## ENV
-
-Create `.env` file for both client and server. See examples:
-
-[Frontend ENV](client/.env.example)
-
-[Backend ENV](server/.env.example)
-
-
 ## Vercel Deployment
 
 Both frontend and backend are deployed on Vercel from the same repository. When deploying on Vercel, make sure to specifiy the root directory as `client` and `server` when importing the repository. See [client vercel.json](client/vercel.json) and [server vercel.json](server/vercel.json).
