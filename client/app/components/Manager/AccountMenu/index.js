@@ -9,10 +9,11 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { Collapse, Navbar } from 'reactstrap';
 
+import { withTranslation } from '../../../utils/translation';
 import Button from '../../Common/Button';
 
 const AccountMenu = props => {
-  const { user, isMenuOpen, links, toggleMenu } = props;
+  const { user, isMenuOpen, links, toggleMenu, t } = props;
 
   const getAllowedProvider = link => {
     if (!link.provider) return true;
@@ -26,13 +27,13 @@ const AccountMenu = props => {
   return (
     <div className='panel-sidebar'>
       <Button
-        text='Dashboard Menu'
+        text={t('dashboardMenu')}
         className={`${isMenuOpen ? 'menu-panel' : 'menu-panel collapse'}`}
         ariaExpanded={isMenuOpen ? 'true' : 'false'}
         // ariaLabel={isMenuOpen ? 'dashboard menu expanded' : 'dashboard menu collapse'}
         onClick={toggleMenu}
       />
-      <h3 className='panel-title'>Account</h3>
+      <h3 className='panel-title'>{t('account')}</h3>
       <Navbar color='light' light expand='md'>
         <Collapse isOpen={isMenuOpen} navbar>
           <ul className='panel-links'>
@@ -59,4 +60,4 @@ const AccountMenu = props => {
   );
 };
 
-export default AccountMenu;
+export default withTranslation(AccountMenu);

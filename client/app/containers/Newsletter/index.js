@@ -9,13 +9,14 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import actions from '../../actions';
+import { withTranslation } from '../../utils/translation';
 
 import Input from '../../components/Common/Input';
 import Button from '../../components/Common/Button';
 
 class Newsletter extends React.PureComponent {
   render() {
-    const { email, newsletterChange, subscribeToNewsletter, formErrors } =
+    const { email, newsletterChange, subscribeToNewsletter, formErrors, t } =
       this.props;
 
     const handleSubmit = event => {
@@ -23,16 +24,20 @@ class Newsletter extends React.PureComponent {
       subscribeToNewsletter();
     };
 
+    const SubscribeButton = (
+      <Button type='submit' variant='primary' text={t('subscribe')} />
+    );
+
     return (
       <div className='newsletter-form'>
-        <p>Sign Up for Our Newsletter</p>
+        <p>{t('signUpNewsletter')}</p>
         <form onSubmit={handleSubmit}>
           <div className='subscribe'>
             <Input
               type={'text'}
               error={formErrors['email']}
               name={'email'}
-              placeholder={'Please Enter Your Email'}
+              placeholder={t('enterYourEmail')}
               value={email}
               onInputChange={(name, value) => {
                 newsletterChange(name, value);
@@ -46,10 +51,6 @@ class Newsletter extends React.PureComponent {
   }
 }
 
-const SubscribeButton = (
-  <Button type='submit' variant='primary' text='Subscribe' />
-);
-
 const mapStateToProps = state => {
   return {
     email: state.newsletter.email,
@@ -57,4 +58,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, actions)(Newsletter);
+export default connect(mapStateToProps, actions)(withTranslation(Newsletter));

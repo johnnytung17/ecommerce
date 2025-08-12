@@ -23,8 +23,8 @@ services:
     command: [
         'sh',
         '-c',
-        'npm run seed:db admin@example.com admin123 && npm start'
-      ] # Default email and password arguments to database seed script - update your admin email and password
+        'npm run seed:db tungjohn28@gmail.com admin@123 && npm start'
+      ] # Admin credentials: tungjohn28@gmail.com / admin@123 (Only admin user will be created)
     depends_on:
       - mongo
     networks:

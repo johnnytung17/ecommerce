@@ -8,6 +8,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import actions from '../../actions';
+import { withTranslation } from '../../utils/translation';
 
 import AccountDetails from '../../components/Manager/AccountDetails';
 import SubPage from '../../components/Manager/SubPage';
@@ -18,11 +19,11 @@ class Account extends React.PureComponent {
   }
 
   render() {
-    const { user, accountChange, updateProfile } = this.props;
+    const { user, accountChange, updateProfile, t } = this.props;
 
     return (
       <div className='account'>
-        <SubPage title={'Account Details'} isMenuOpen={null}>
+        <SubPage title={t('accountDetails')} isMenuOpen={null}>
           <AccountDetails
             user={user}
             accountChange={accountChange}
@@ -42,4 +43,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, actions)(Account);
+export default connect(mapStateToProps, actions)(withTranslation(Account));

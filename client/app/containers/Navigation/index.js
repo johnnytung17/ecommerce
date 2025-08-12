@@ -27,9 +27,11 @@ import {
 } from 'reactstrap';
 
 import actions from '../../actions';
+import { withTranslation } from '../../utils/translation';
 
 import Button from '../../components/Common/Button';
 import CartIcon from '../../components/Common/CartIcon';
+import LanguageSelector from '../../components/Common/LanguageSelector';
 import { BarsIcon } from '../../components/Common/Icon';
 import MiniBrand from '../../components/Store//MiniBrand';
 import Menu from '../NavigationMenu';
@@ -124,11 +126,12 @@ class Navigation extends React.PureComponent {
       suggestions,
       onSearch,
       onSuggestionsFetchRequested,
-      onSuggestionsClearRequested
+      onSuggestionsClearRequested,
+      t
     } = this.props;
 
     const inputProps = {
-      placeholder: 'Search Products',
+      placeholder: t('search'),
       value: searchValue,
       onChange: (_, { newValue }) => {
         onSearch(newValue);
@@ -139,22 +142,32 @@ class Navigation extends React.PureComponent {
       <header className='header fixed-mobile-header'>
         <div className='header-info'>
           <Container>
-            <Row>
-              <Col md='4' className='text-center d-none d-md-block'>
+            <Row className='align-items-center'>
+              <Col md='3' className='d-none d-md-flex align-items-center justify-content-center'>
                 <i className='fa fa-truck' />
                 <span>Free Shipping</span>
               </Col>
-              <Col md='4' className='text-center d-none d-md-block'>
+              <Col md='3' className='d-none d-md-flex align-items-center justify-content-center'>
                 <i className='fa fa-credit-card' />
                 <span>Payment Methods</span>
               </Col>
-              <Col md='4' className='text-center d-none d-md-block'>
+              <Col md='3' className='d-none d-md-flex align-items-center justify-content-center'>
                 <i className='fa fa-phone' />
-                <span>Call us 951-999-9999</span>
+                <span>Call us 034-408-6425</span>
               </Col>
-              <Col xs='12' className='text-center d-block d-md-none'>
-                <i className='fa fa-phone' />
-                <span> Need advice? Call us 951-999-9999</span>
+              <Col md='3' className='d-none d-md-flex align-items-center justify-content-end'>
+                <LanguageSelector />
+              </Col>
+              <Col xs='12' className='d-block d-md-none'>
+                <div className='d-flex justify-content-between align-items-center flex-wrap'>
+                  <div className='d-flex align-items-center flex-fill justify-content-center mb-2 mb-sm-0'>
+                    <i className='fa fa-phone' />
+                    <span>Call us 034-408-6425</span>
+                  </div>
+                  <div className='d-flex justify-content-center'>
+                    <LanguageSelector />
+                  </div>
+                </div>
               </Col>
             </Row>
           </Container>
@@ -243,7 +256,7 @@ class Navigation extends React.PureComponent {
                       isOpen={isBrandOpen}
                     >
                       <DropdownToggle nav>
-                        Brands
+                        {t('brands')}
                         <span className='fa fa-chevron-down dropdown-caret'></span>
                       </DropdownToggle>
                       <DropdownMenu right className='nav-brand-dropdown'>
@@ -262,36 +275,36 @@ class Navigation extends React.PureComponent {
                       to='/shop'
                       activeClassName='active'
                     >
-                      Shop
+                      {t('shop')}
                     </NavLink>
                   </NavItem>
                   {authenticated ? (
                     <UncontrolledDropdown nav inNavbar>
                       <DropdownToggle nav>
-                        {user.firstName ? user.firstName : 'Welcome'}
+                        {user.firstName ? user.firstName : t('account')}
                         <span className='fa fa-chevron-down dropdown-caret'></span>
                       </DropdownToggle>
                       <DropdownMenu right>
                         <DropdownItem
                           onClick={() => history.push('/dashboard')}
                         >
-                          Dashboard
+                          {t('dashboard')}
                         </DropdownItem>
-                        <DropdownItem onClick={signOut}>Sign Out</DropdownItem>
+                        <DropdownItem onClick={signOut}>{t('logout')}</DropdownItem>
                       </DropdownMenu>
                     </UncontrolledDropdown>
                   ) : (
                     <UncontrolledDropdown nav inNavbar>
                       <DropdownToggle nav>
-                        Welcome!
+                        {t('account')}
                         <span className='fa fa-chevron-down dropdown-caret'></span>
                       </DropdownToggle>
                       <DropdownMenu right>
                         <DropdownItem onClick={() => history.push('/login')}>
-                          Login
+                          {t('login')}
                         </DropdownItem>
                         <DropdownItem onClick={() => history.push('/register')}>
-                          Sign Up
+                          {t('signup')}
                         </DropdownItem>
                       </DropdownMenu>
                     </UncontrolledDropdown>
@@ -353,4 +366,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, actions)(withRouter(Navigation));
+export default connect(mapStateToProps, actions)(withRouter(withTranslation(Navigation)));

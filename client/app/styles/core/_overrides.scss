@@ -1,5 +1,9 @@
 // overrides styles
 
+// Bootstrap font family override for multilingual support
+$font-family-sans-serif: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif !default;
+$font-family-base: $font-family-sans-serif !default;
+
 // start bootstrap overrides
 .form-control {
   height: auto;
