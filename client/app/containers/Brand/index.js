@@ -25,7 +25,7 @@ class Brand extends React.PureComponent {
         <Switch>
           <Route exact path='/dashboard/brand' component={List} />
           <Route exact path='/dashboard/brand/edit/:id' component={Edit} />
-          {user.role === ROLES.Admin && (
+          {(user.role === ROLES.Admin || user.role === ROLES.Merchant) && (
             <Route exact path='/dashboard/brand/add' component={Add} />
           )}
           <Route path='*' component={Page404} />

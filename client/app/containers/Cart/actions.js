@@ -30,7 +30,9 @@ import { toggleCart } from '../Navigation/actions';
 // Handle Add To Cart
 export const handleAddToCart = product => {
   return (dispatch, getState) => {
-    product.quantity = Number(getState().product.productShopData.quantity);
+    const productShopData = getState().product.productShopData;
+    product.quantity = Number(productShopData.quantity);
+    product.selectedSize = product.selectedSize || productShopData.selectedSize;
     product.totalPrice = product.quantity * product.price;
     product.totalPrice = parseFloat(product.totalPrice.toFixed(2));
     const inventory = getState().product.storeProduct.inventory;
@@ -40,6 +42,17 @@ export const handleAddToCart = product => {
     const rules = {
       quantity: `min:1|max:${result}`
     };
+
+    // Add size validation if product has sizes
+    const productSizes = product.sizes || [];
+    const hasActiveSizes = productSizes.some(size => size.isActive && size.quantity > 0);
+    
+    if (hasActiveSizes && !product.selectedSize) {
+      return dispatch({ 
+        type: SET_PRODUCT_SHOP_FORM_ERRORS, 
+        payload: { selectedSize: 'Please select a size.' }
+      });
+    }
 
     const { isValid, errors } = allFieldsValidation(product, rules, {
       'min.quantity': 'Quantity must be at least 1.',

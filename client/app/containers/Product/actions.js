@@ -187,6 +187,9 @@ export const fetchProduct = id => {
     try {
       const response = await axios.get(`${API_URL}/product/${id}`);
 
+      console.log('FetchProduct - response.data.product:', response.data.product);
+      console.log('FetchProduct - sizes:', response.data.product.sizes);
+
       const inventory = response.data.product.quantity;
 
       const brand = response.data.product.brand;
@@ -200,6 +203,9 @@ export const fetchProduct = id => {
       response.data.product.brand = brandData[0];
 
       const product = { ...response.data.product, inventory };
+
+      console.log('FetchProduct - final product:', product);
+      console.log('FetchProduct - final sizes:', product.sizes);
 
       dispatch({
         type: FETCH_PRODUCT,
@@ -246,7 +252,8 @@ export const addProduct = () => {
             ? brand !== 0
               ? brand
               : null
-            : brands[1].value
+            : brands[1].value,
+        sizes: product.sizes || []
       };
 
       const { isValid, errors } = allFieldsValidation(newProduct, rules, {
@@ -269,10 +276,18 @@ export const addProduct = () => {
       }
       const formData = new FormData();
       if (newProduct.image) {
+        // Debug log to check sizes data
+        console.log('AddProduct - newProduct sizes:', newProduct.sizes);
+        console.log('AddProduct - full newProduct:', newProduct);
+        
         for (const key in newProduct) {
           if (newProduct.hasOwnProperty(key)) {
             if (key === 'brand' && newProduct[key] === null) {
               continue;
+            } else if (key === 'sizes') {
+              // Serialize sizes array as JSON string
+              console.log('AddProduct - serializing sizes:', JSON.stringify(newProduct[key]));
+              formData.set(key, JSON.stringify(newProduct[key]));
             } else {
               formData.set(key, newProduct[key]);
             }
@@ -332,7 +347,8 @@ export const updateProduct = () => {
         quantity: product.quantity,
         price: product.price,
         taxable: product.taxable,
-        brand: brand != 0 ? brand : null
+        brand: brand != 0 ? brand : null,
+        sizes: product.sizes || []
       };
 
       const { isValid, errors } = allFieldsValidation(newProduct, rules, {

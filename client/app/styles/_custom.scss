@@ -1,1 +1,26 @@
 // Here you can add other styles
+
+// Global font family for multilingual support
+body {
+  font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif !important;
+  font-display: swap; // Improve font loading performance
+}
+
+// Ensure all headings use Open Sans
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif !important;
+  font-display: swap;
+}
+
+// Ensure all form elements use Open Sans
+input, textarea, select, button {
+  font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif !important;
+}
+
+// Vietnamese character optimization
+body[lang="vi"], 
+.vietnamese-text,
+.language-vi {
+  font-feature-settings: "kern" 1, "liga" 1;
+  text-rendering: optimizeLegibility;
+}

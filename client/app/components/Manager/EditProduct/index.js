@@ -10,10 +10,12 @@ import { Link } from 'react-router-dom';
 import { Row, Col } from 'reactstrap';
 
 import { ROLES } from '../../../constants';
+import { generateSKU, validateSKU } from '../../../utils/sku';
 import Input from '../../Common/Input';
 import Switch from '../../Common/Switch';
 import Button from '../../Common/Button';
 import SelectOption from '../../Common/SelectOption';
+import SizeManager from '../../Common/SizeManager';
 
 const taxableSelect = [
   { value: 1, label: 'Yes' },
@@ -37,6 +39,27 @@ const EditProduct = props => {
     updateProduct();
   };
 
+  // Handle name change and optionally regenerate SKU
+  const handleNameChange = (name, value) => {
+    productChange(name, value);
+  };
+
+  // Generate new SKU manually
+  const handleGenerateNewSKU = () => {
+    if (product.name && product.name.trim()) {
+      const selectedBrand = brands.find(brand => brand.value === (product.brand?._id || product.brand?.value));
+      const brandName = selectedBrand ? selectedBrand.label : (product.brand?.name || '');
+      
+      const generatedSKU = generateSKU(product.name, brandName);
+      productChange('sku', generatedSKU);
+    }
+  };
+
+  // Handle sizes change
+  const handleSizesChange = (sizes) => {
+    productChange('sizes', sizes);
+  };
+
   return (
     <div className='edit-product'>
       <div className='d-flex flex-row mx-0 mb-3'>
@@ -56,23 +79,32 @@ const EditProduct = props => {
               name={'name'}
               placeholder={'Product Name'}
               value={product.name}
-              onInputChange={(name, value) => {
-                productChange(name, value);
-              }}
+              onInputChange={handleNameChange}
             />
           </Col>
           <Col xs='12'>
-            <Input
-              type={'text'}
-              error={formErrors['sku']}
-              label={'Sku'}
-              name={'sku'}
-              placeholder={'Product Sku'}
-              value={product.sku}
-              onInputChange={(name, value) => {
-                productChange(name, value);
-              }}
-            />
+            <div className='sku-input-group'>
+              <Input
+                type={'text'}
+                error={formErrors['sku']}
+                label={'SKU'}
+                name={'sku'}
+                placeholder={'Product SKU'}
+                value={product.sku}
+                onInputChange={(name, value) => {
+                  productChange(name, value);
+                }}
+              />
+              <Button
+                type='button'
+                variant='outline-secondary'
+                text='Generate New SKU'
+                className='mt-2'
+                size='sm'
+                onClick={handleGenerateNewSKU}
+                disabled={!product.name || !product.name.trim()}
+              />
+            </div>
           </Col>
           <Col xs='12'>
             <Input
@@ -155,6 +187,13 @@ const EditProduct = props => {
               />
             </Col>
           )}
+          <Col xs='12' md='12'>
+            <SizeManager
+              sizes={product.sizes || []}
+              onSizesChange={handleSizesChange}
+              error={formErrors['sizes']}
+            />
+          </Col>
           <Col xs='12' md='12' className='mt-3 mb-2'>
             <Switch
               id={`enable-product-${product._id}`}

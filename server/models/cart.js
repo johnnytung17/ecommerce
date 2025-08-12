@@ -10,7 +10,16 @@ const CartItemSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Product'
   },
+  productSize: {
+    type: Schema.Types.ObjectId,
+    ref: 'ProductSize',
+    default: null
+  },
   quantity: Number,
+  selectedSize: {
+    type: String,
+    default: ''
+  },
   purchasePrice: {
     type: Number,
     default: 0

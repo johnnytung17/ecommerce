@@ -12,3 +12,121 @@
 
 // Import custom styles
 @import 'custom';
+
+// SKU Input Group Styles
+.sku-input-group {
+  .btn {
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 500;
+    
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+  
+  .btn-outline-secondary {
+    border-color: #6c757d;
+    color: #6c757d;
+    
+    &:hover:not(:disabled) {
+      background-color: #6c757d;
+      color: #fff;
+      transform: translateY(-1px);
+    }
+    
+    &:focus {
+      box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25);
+    }
+  }
+}
+
+// Size Selector styles
+.size-selector {
+  .size-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .size-btn {
+    padding: 8px 16px;
+    border: 2px solid #dee2e6;
+    background: white;
+    border-radius: 4px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 50px;
+    text-align: center;
+    position: relative;
+
+    &:hover {
+      border-color: #007bff;
+      background: #f8f9fa;
+      transform: translateY(-1px);
+    }
+
+    &.selected {
+      border-color: #007bff;
+      background: #007bff;
+      color: white;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      
+      &:hover {
+        border-color: #dee2e6;
+        background: white;
+      }
+    }
+
+    .low-stock {
+      display: block;
+      font-size: 11px;
+      font-weight: 400;
+      opacity: 0.8;
+      margin-top: 2px;
+    }
+
+    &.selected .low-stock {
+      color: rgba(255, 255, 255, 0.9);
+    }
+  }
+}
+
+// Size Manager styles (for admin forms)
+.size-manager {
+  .size-item {
+    background: #f8f9fa;
+    border-color: #dee2e6 !important;
+    
+    .form-group {
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  .add-size-form {
+    background: #e9ecef !important;
+    border-color: #ced4da !important;
+    
+    h6 {
+      color: #495057;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+    
+    .form-group {
+      margin-bottom: 0.5rem;
+    }
+  }
+}

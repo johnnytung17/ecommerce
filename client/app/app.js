@@ -10,6 +10,7 @@ import { ConnectedRouter } from 'connected-react-router';
 
 import store, { history } from './store';
 import { SocketProvider } from './contexts/Socket';
+import { LanguageProvider } from './contexts/Language';
 import { SET_AUTH } from './containers/Authentication/constants';
 import Application from './containers/Application';
 import ScrollToTop from './scrollToTop';
@@ -44,11 +45,13 @@ if (token) {
 const app = () => (
   <Provider store={store}>
     <ConnectedRouter history={history}>
-      <SocketProvider>
-        <ScrollToTop>
-          <Application />
-        </ScrollToTop>
-      </SocketProvider>
+      <LanguageProvider>
+        <SocketProvider>
+          <ScrollToTop>
+            <Application />
+          </ScrollToTop>
+        </SocketProvider>
+      </LanguageProvider>
     </ConnectedRouter>
   </Provider>
 );

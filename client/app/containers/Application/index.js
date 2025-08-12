@@ -4,13 +4,14 @@
  *
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { connect } from 'react-redux';
 import { Switch, Route } from 'react-router-dom';
 import { Container } from 'reactstrap';
 
 import actions from '../../actions';
+import { useLanguage } from '../../contexts/Language';
 
 // routes
 import Login from '../Login';
@@ -118,6 +119,25 @@ class Application extends React.PureComponent {
   }
 }
 
+// Language wrapper component
+const ApplicationWithLanguage = (props) => {
+  const { currentLanguage } = useLanguage();
+  
+  useEffect(() => {
+    // Update document language and class for CSS targeting
+    document.documentElement.lang = currentLanguage;
+    document.documentElement.className = document.documentElement.className
+      .replace(/\blanguage-\w+/g, '') + ` language-${currentLanguage}`;
+    
+    // Update body class for font optimization
+    document.body.className = document.body.className
+      .replace(/\blang-\w+/g, '') + ` lang-${currentLanguage}`;
+      
+  }, [currentLanguage]);
+  
+  return <Application {...props} />;
+};
+
 const mapStateToProps = state => {
   return {
     authenticated: state.authentication.authenticated,
@@ -125,4 +145,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, actions)(Application);
+export default connect(mapStateToProps, actions)(ApplicationWithLanguage);

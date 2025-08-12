@@ -10,7 +10,7 @@ const role = require('../../middleware/role');
 const store = require('../../utils/store');
 const { ROLES, MERCHANT_STATUS } = require('../../constants');
 
-router.post('/add', auth, role.check(ROLES.Admin), async (req, res) => {
+router.post('/add', auth, role.check(ROLES.Admin, ROLES.Merchant), async (req, res) => {
   try {
     const name = req.body.name;
     const description = req.body.description;
@@ -22,17 +22,43 @@ router.post('/add', auth, role.check(ROLES.Admin), async (req, res) => {
         .json({ error: 'You must enter description & name.' });
     }
 
-    const brand = new Brand({
+    // Check if merchant already has a brand
+    if (req.user.role === ROLES.Merchant && req.user.merchant) {
+      const existingMerchant = await Merchant.findById(req.user.merchant);
+      if (existingMerchant && existingMerchant.brand) {
+        return res.status(400).json({
+          error: 'You already have a brand. Each merchant can only have one brand.'
+        });
+      }
+    }
+
+    const brandData = {
       name,
       description,
-      isActive
-    });
+      isActive: req.user.role === ROLES.Admin ? isActive : false // Merchant brands need approval
+    };
 
+    // If merchant is creating brand, link it to merchant
+    if (req.user.role === ROLES.Merchant && req.user.merchant) {
+      brandData.merchant = req.user.merchant;
+    }
+
+    const brand = new Brand(brandData);
     const brandDoc = await brand.save();
+
+    // Update merchant record with brand reference
+    if (req.user.role === ROLES.Merchant && req.user.merchant) {
+      await Merchant.findByIdAndUpdate(req.user.merchant, {
+        brand: brandDoc._id,
+        status: MERCHANT_STATUS.Waiting_Approval
+      });
+    }
 
     res.status(200).json({
       success: true,
-      message: `Brand has been added successfully!`,
+      message: req.user.role === ROLES.Admin 
+        ? `Brand has been added successfully!`
+        : `Brand has been submitted for approval!`,
       brand: brandDoc
     });
   } catch (error) {
@@ -111,6 +137,50 @@ router.get('/:id', async (req, res) => {
     });
   }
 });
+
+router.put(
+  '/:id/approve',
+  auth,
+  role.check(ROLES.Admin),
+  async (req, res) => {
+    try {
+      const brandId = req.params.id;
+      const { isActive } = req.body;
+
+      const brand = await Brand.findById(brandId).populate('merchant');
+      if (!brand) {
+        return res.status(404).json({
+          error: 'Brand not found.'
+        });
+      }
+
+      // Update brand status
+      await Brand.findByIdAndUpdate(brandId, { isActive });
+
+      // Update merchant status if brand is being approved
+      if (brand.merchant && isActive) {
+        await Merchant.findByIdAndUpdate(brand.merchant._id, {
+          status: MERCHANT_STATUS.Approved,
+          isActive: true
+        });
+      } else if (brand.merchant && !isActive) {
+        await Merchant.findByIdAndUpdate(brand.merchant._id, {
+          status: MERCHANT_STATUS.Rejected,
+          isActive: false
+        });
+      }
+
+      res.status(200).json({
+        success: true,
+        message: isActive ? 'Brand has been approved!' : 'Brand has been rejected!'
+      });
+    } catch (error) {
+      res.status(400).json({
+        error: 'Your request could not be processed. Please try again.'
+      });
+    }
+  }
+);
 
 router.get(
   '/list/select',

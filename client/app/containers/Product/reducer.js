@@ -45,11 +45,13 @@ const initialState = {
     brand: {
       value: 0,
       label: 'No Options Selected'
-    }
+    },
+    sizes: []
   },
   isLoading: false,
   productShopData: {
-    quantity: 1
+    quantity: 1,
+    selectedSize: ''
   },
   formErrors: {},
   editFormErrors: {},
